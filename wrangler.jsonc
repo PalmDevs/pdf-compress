@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Cloudflare Pages project (static site, no Functions).
+  "name": "pdf-compress",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-11-06"
+}

@@ -1,0 +1,36 @@
+{
+  "name": "pdf-compress",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
+    "preview": "bunx --bun vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "fixture": "bun scripts/make-fixture.ts",
+    "pages:dev": "bun run build && wrangler pages dev",
+    "deploy": "bun run build && wrangler pages deploy --branch main",
+    "deploy:preview": "bun run build && wrangler pages deploy --branch preview"
+  },
+  "dependencies": {
+    "@jsquash/jpeg": "^1.6.0",
+    "@jsquash/oxipng": "^2.3.0",
+    "@jsquash/resize": "^2.1.1",
+    "@solidjs/web": "2.0.0-rc.21",
+    "comlink": "^4.4.2",
+    "fflate": "^0.8.3",
+    "libimagequant-wasm": "^0.5.0",
+    "mupdf": "1.28.1",
+    "solid-js": "2.0.0-rc.21"
+  },
+  "devDependencies": {
+    "@solidjs/vite-plugin": "3.0.0-next.56",
+    "@types/bun": "latest",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6",
+    "wrangler": "4.158.0"
+  }
+}

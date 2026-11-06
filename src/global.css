@@ -1,0 +1,72 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #666666;
+  --border: #d4d4d4;
+  --row-hover: #f4f4f5;
+  --row-selected: #e6effb;
+  --accent: #1f5fbf;
+  --good: #1d7a3a;
+  --bad: #b3261e;
+  --panel: #fafafa;
+  --checker: #e5e5e5;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181b;
+    --fg: #e4e4e7;
+    --muted: #a1a1aa;
+    --border: #3f3f46;
+    --row-hover: #232327;
+    --row-selected: #1e2b40;
+    --accent: #7aa7ff;
+    --good: #5cc27a;
+    --bad: #ff8a80;
+    --panel: #1f1f23;
+    --checker: #2a2a2e;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+input[type="number"],
+select {
+  padding: 2px 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}

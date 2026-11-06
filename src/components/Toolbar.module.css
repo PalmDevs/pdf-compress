@@ -1,0 +1,60 @@
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 16px;
+}
+
+.file {
+  align-self: center;
+}
+
+.preset {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.total {
+  align-self: center;
+}
+
+.good {
+  color: var(--good);
+}
+
+.muted {
+  align-self: center;
+  color: var(--muted);
+}
+
+.primary {
+  padding: 4px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.primary:disabled {
+  opacity: 0.6;
+}
+
+.secondary {
+  padding: 2px 8px;
+}

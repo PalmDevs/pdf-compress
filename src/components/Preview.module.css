@@ -1,0 +1,128 @@
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 12px;
+  margin: 0;
+}
+
+.details dt {
+  color: var(--muted);
+}
+
+.details dd {
+  margin: 0;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compareHeader {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.compareHeader > span:last-child {
+  text-align: right;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pane {
+  min-height: 120px;
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid var(--border);
+  background: var(--checker);
+}
+
+.canvas {
+  display: block;
+  image-rendering: auto;
+}
+
+.fit {
+  width: 100%;
+  height: auto;
+}
+
+.muted {
+  margin: 8px;
+  color: var(--muted);
+}
+
+.bad {
+  margin: 0;
+  color: var(--bad);
+}
+
+/* Bottom-sheet layout (see App.module.css): comparison first, Close always reachable. */
+@media (max-width: 1200px) {
+  .preview {
+    border-radius: 0;
+    border-width: 1px 0 0;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: -12px -12px 0;
+    padding: 8px 12px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compareHeader,
+  .compare {
+    order: 1;
+  }
+
+  .details,
+  .settings,
+  .preview > p {
+    order: 2;
+  }
+
+  .pane {
+    min-height: 80px;
+    max-height: 30vh;
+  }
+}

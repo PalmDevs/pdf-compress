@@ -1,0 +1,30 @@
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.number {
+  width: 6em;
+}
+
+.compact {
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.compact .number {
+  width: 4.5em;
+}
