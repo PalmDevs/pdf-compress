@@ -12,9 +12,11 @@ import type {
   SaveOptions,
 } from "../lib/types";
 
-// mupdf.js loads its wasm with top-level await. Importing it statically would delay
-// Comlink.expose until that finishes, and messages arriving earlier would be lost.
-const core = import("../lib/pdf-core");
+// mupdf.js loads its wasm (~10 MB) with top-level await. Importing it statically would
+// delay Comlink.expose until that finishes, and messages arriving earlier would be lost.
+// It is loaded on init(), after the page has downloaded the app files.
+let corePromise: Promise<typeof import("../lib/pdf-core")> | undefined;
+const loadCore = () => (corePromise ??= import("../lib/pdf-core"));
 
 let session: PdfSession | null = null;
 
@@ -35,11 +37,16 @@ function toBitmap(px: Pixels, maxSize?: number): Promise<ImageBitmap> {
 }
 
 const api = {
+  /** Loads the PDF engine. */
+  async init(): Promise<void> {
+    await loadCore();
+  },
+
   async open(
     bytes: Uint8Array,
     onProgress?: (done: number, total: number) => void,
   ): Promise<{ pageCount: number; images: ImageInfo[] }> {
-    const { PdfSession } = await core;
+    const { PdfSession } = await loadCore();
     session?.destroy();
     session = null;
     const opened = new PdfSession(bytes);
@@ -62,7 +69,7 @@ const api = {
   },
 
   async cmykJpeg(px: Pixels, quality: number): Promise<Encoded> {
-    const { encodeCmykJpeg } = await core;
+    const { encodeCmykJpeg } = await loadCore();
     const encoded = encodeCmykJpeg(px, quality);
     return Comlink.transfer(encoded, [encoded.data.buffer]);
   },

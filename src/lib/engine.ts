@@ -1,6 +1,7 @@
 import * as Comlink from "comlink";
 import { createStore, flush, snapshot } from "solid-js";
 import type { PdfApi } from "../workers/pdf.worker";
+import { prepareOffline } from "./offline";
 import { AbortedError, CodecPool } from "./pool";
 import {
   colorTarget,
@@ -54,7 +55,15 @@ export interface FileState {
   pageCount: number;
 }
 
+/** Start-up: download the app files, then load the PDF engine. */
+export type Boot =
+  | { phase: "downloading"; done: number; total: number }
+  | { phase: "starting" }
+  | { phase: "ready"; offline: boolean; note: string | null }
+  | { phase: "error"; message: string };
+
 export interface State {
+  boot: Boot;
   file: FileState | null;
   /** Progress text while opening. */
   progress: string | null;
@@ -105,6 +114,7 @@ export function createEngine() {
   const pool = new CodecPool(poolSize);
 
   const [state, setState] = createStore<State>({
+    boot: { phase: "downloading", done: 0, total: 0 },
     file: null,
     progress: null,
     error: null,
@@ -336,7 +346,63 @@ export function createEngine() {
     }
   }
 
+  /** A file to open once start-up finishes (e.g. launched via "Open with…"). */
+  let pendingFile: File | null = null;
+  let lastProgress = 0;
+  /**
+   * Starts the app. Must not write state before its first await: the first call
+   * happens while <App> is being set up, where Solid forbids writes. The store
+   * already starts in the "downloading" phase.
+   */
+  async function boot() {
+    lastProgress = 0;
+    try {
+      const result = await prepareOffline((done, total) => {
+        // Repaint at most every ~1% to keep the UI cheap during a fast download.
+        if (done < total && total > 0 && done - lastProgress < total / 100) return;
+        lastProgress = done;
+        setState((s) => {
+          s.boot = { phase: "downloading", done, total };
+        });
+      });
+      setState((s) => {
+        s.boot = { phase: "starting" };
+      });
+      await pdf.init();
+      setState((s) => {
+        s.boot = { phase: "ready", offline: result.offline, note: result.offline ? null : result.reason };
+      });
+      flush();
+      if (pendingFile) {
+        const file = pendingFile;
+        pendingFile = null;
+        void open(file);
+      }
+    } catch (err) {
+      console.error(err);
+      setState((s) => {
+        s.boot = { phase: "error", message: err instanceof Error ? err.message : String(err) };
+      });
+    }
+  }
+  void boot();
+
+  /** After a failed start (called from the Retry button). */
+  function retryBoot() {
+    setState((s) => {
+      s.boot = { phase: "downloading", done: 0, total: 0 };
+    });
+    void boot();
+  }
+
+  /** Opens `file` now, or as soon as the app has finished starting. */
+  function openWhenReady(file: File) {
+    if (state.boot.phase === "ready") void open(file);
+    else pendingFile = file;
+  }
+
   async function open(file: File) {
+    if (state.boot.phase !== "ready") return;
     reset();
     const gen = generation;
     setState((s) => {
@@ -551,7 +617,7 @@ export function createEngine() {
     }
   }
 
-  return { state, pdf, open, setPreset, setCustom, applyToAll, setDocOptions, select, result, save };
+  return { state, pdf, retryBoot, open, openWhenReady, setPreset, setCustom, applyToAll, setDocOptions, select, result, save };
 }
 
 export type Engine = ReturnType<typeof createEngine>;

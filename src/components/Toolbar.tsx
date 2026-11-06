@@ -3,6 +3,8 @@ import { EngineContext } from "../context";
 import { isReplacement } from "../lib/engine";
 import { formatBytes, formatChange } from "../lib/format";
 import { PRESETS, presetFor } from "../lib/settings";
+import { install, installable } from "../lib/pwa";
+import { BootStatus } from "./BootStatus";
 import { DocumentOptions } from "./DocumentOptions";
 import { Select } from "./Select";
 import { SettingsFields } from "./SettingsFields";
@@ -38,7 +40,12 @@ export function Toolbar(props: { onOpen: (files: FileList | null) => void }) {
   return (
     <header class={styles.toolbar}>
       <div class={styles.row}>
-        <button type="button" onClick={() => fileInput.click()}>
+        <button
+          type="button"
+          disabled={state.boot.phase !== "ready"}
+          title={state.boot.phase === "ready" ? undefined : "Available once the app has loaded"}
+          onClick={() => fileInput.click()}
+        >
           Open PDF…
         </button>
         <input
@@ -55,9 +62,16 @@ export function Toolbar(props: { onOpen: (files: FileList | null) => void }) {
           {(file) => (
             <span class={styles.file}>
               <strong>{file().name}</strong> · {formatBytes(file().size)} · {file().pageCount} page
-              {file().pageCount === 1 ? "" : "s"} · {state.rows.length} image{state.rows.length === 1 ? "" : "s"}
+              {file().pageCount === 1 ? "" : "s"} · {state.rows.length} image
+              {state.rows.length === 1 ? "" : "s"}
             </span>
           )}
+        </Show>
+        <BootStatus />
+        <Show when={installable()}>
+          <button type="button" class={styles.secondary} onClick={() => void install()}>
+            Install app
+          </button>
         </Show>
       </div>
 
@@ -84,7 +98,8 @@ export function Toolbar(props: { onOpen: (files: FileList | null) => void }) {
                 title="Drop per-image settings so every image follows the preset"
                 onClick={() => engine.applyToAll(state.preset)}
               >
-                Reset {totals().custom} custom image{totals().custom === 1 ? "" : "s"}
+                Reset {totals().custom} custom image
+                {totals().custom === 1 ? "" : "s"}
               </button>
             </Show>
           </div>

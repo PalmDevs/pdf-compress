@@ -2,6 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 32px;
 }
 
 .dragging {
@@ -64,5 +65,22 @@
     background: var(--bg);
     box-shadow: 0 -4px 16px rgb(0 0 0 / 0.18);
     overscroll-behavior: contain;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  align-items: center;
+  padding: 8px;
+  bottom: 0;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--panel);
+
+  p {
+    margin: 0;
   }
 }

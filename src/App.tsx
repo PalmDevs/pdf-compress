@@ -5,14 +5,16 @@ import { Preview } from "./components/Preview";
 import { Toolbar } from "./components/Toolbar";
 import { EngineContext } from "./context";
 import { createEngine } from "./lib/engine";
+import { handleLaunchFiles } from "./lib/pwa";
 
 export function App() {
   const engine = createEngine();
   const [dragging, setDragging] = createSignal(false);
+  handleLaunchFiles((file) => engine.openWhenReady(file));
 
   const openFiles = (files: FileList | null | undefined) => {
     const file = files?.[0];
-    if (file) void engine.open(file);
+    if (file && engine.state.boot.phase === "ready") void engine.open(file);
   };
 
   return (
@@ -21,7 +23,7 @@ export function App() {
         class={[styles.app, { [styles.dragging]: dragging() }]}
         onDragOver={(e) => {
           e.preventDefault();
-          setDragging(true);
+          if (engine.state.boot.phase === "ready") setDragging(true);
         }}
         onDragLeave={(e) => {
           if (e.currentTarget === e.target) setDragging(false);
@@ -42,7 +44,11 @@ export function App() {
           when={engine.state.file}
           fallback={
             <Show when={!engine.state.progress}>
-              <p class={styles.empty}>Open a PDF, or drop one anywhere on this page.</p>
+              <p class={styles.empty}>
+                {engine.state.boot.phase === "ready"
+                  ? "Open a PDF, or drop one anywhere on this page."
+                  : "Loading the app — you can open a PDF once it's ready."}
+              </p>
             </Show>
           }
         >
@@ -66,6 +72,10 @@ export function App() {
             </main>
           </Show>
         </Show>
+        <footer class={styles.footer}>
+          <p>Licensed under AGPL-3.0</p>
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/PalmDevs/pdf-compress">Source code</a>
+        </footer>
       </div>
     </EngineContext>
   );

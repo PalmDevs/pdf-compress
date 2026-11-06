@@ -7,3 +7,9 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
+
+# Offline support files must always be revalidated so updates are noticed.
+/sw.js
+  Cache-Control: no-cache
+/precache.json
+  Cache-Control: no-cache
