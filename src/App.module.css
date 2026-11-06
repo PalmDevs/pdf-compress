@@ -1,5 +1,5 @@
 .app {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   padding-bottom: 32px;
@@ -43,7 +43,7 @@
   flex: 0 0 min(480px, 38%);
   position: sticky;
   top: 0;
-  max-height: 100vh;
+  max-height: 100dvh;
   overflow: auto;
 }
 
@@ -60,7 +60,7 @@
     bottom: 0;
     z-index: 2;
     flex-basis: auto;
-    max-height: 55vh;
+    max-height: 55dvh;
     margin: 0 -16px -16px;
     background: var(--bg);
     box-shadow: 0 -4px 16px rgb(0 0 0 / 0.18);

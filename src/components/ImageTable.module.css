@@ -30,7 +30,7 @@
 @media (max-width: 1200px) {
   /* Room for the preview bottom sheet (App.module.css) when scrolling a row into view. */
   .row {
-    scroll-margin-bottom: calc(55vh + 8px);
+    scroll-margin-bottom: calc(55dvh + 8px);
   }
 }
 
